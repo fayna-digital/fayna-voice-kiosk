@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Bistro Przykład - Europejska Restauracja</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(145deg, #6B2E0E 0%, #8B4513 70%, #A0522D 100%);
+            color: #FFF8DC;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 15px;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(10px);
+            border-radius: 60px 60px 40px 40px;
+            padding: 30px 20px;
+            box-shadow: 0 25px 50px -8px rgba(0,0,0,0.6);
+            border: 2px solid #DAA520;
+        }
+
+        h1 {
+            font-size: clamp(2.5rem, 10vw, 5rem);
+            color: #FFD700;
+            text-shadow: 4px 4px 0 #5A2E0E;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+            text-align: center;
+        }
+
+        .subtitle {
+            font-size: clamp(1rem, 4vw, 1.5rem);
+            color: #FFE4B5;
+            text-align: center;
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+
+        /* GŁÓWNY PRZYCISK - DUŻY, OKRĄGŁY, DOTYKOWY */
+        .mic-container {
+            display: flex;
+            justify-content: center;
+            margin: 30px 0;
+            position: relative;
+        }
+
+        .mic-button {
+            width: min(250px, 60vw);
+            height: min(250px, 60vw);
+            border-radius: 50%;
+            background: linear-gradient(145deg, #FFD700, #FFA500);
+            border: 6px solid #FFF8DC;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5), 0 0 0 8px rgba(218,165,32,0.3);
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            -webkit-tap-highlight-color: transparent;
+            font-size: clamp(4rem, 15vw, 7rem);
+            color: #5A2E0E;
+            line-height: 1;
+            padding-bottom: 10px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .mic-button span {
+            font-size: clamp(0.9rem, 3vw, 1.2rem);
+            margin-top: 10px;
+            color: #5A2E0E;
+            font-weight: bold;
+            background: rgba(255,255,255,0.3);
+            padding: 8px 20px;
+            border-radius: 40px;
+        }
+
+        .mic-button.active {
+            background: linear-gradient(145deg, #FF4444, #CC0000);
+            color: white;
+            box-shadow: 0 0 30px #FF4444, 0 0 60px #FF8888;
+            transform: scale(1.02);
+            border-color: #FFD700;
+        }
+
+        .mic-button.active span {
+            background: rgba(255,255,255,0.2);
+            color: white;
+        }
+
+        .mic-button:active {
+            transform: scale(0.98);
+        }
+
+        /* Animacja pulsowania podczas nasłuchiwania */
+        .mic-button.listening {
+            animation: pulse 1.8s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 68, 68, 0.7), 0 0 0 10px rgba(255, 68, 68, 0.3); }
+            70% { box-shadow: 0 0 0 20px rgba(255, 68, 68, 0), 0 0 0 30px rgba(255, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 68, 68, 0), 0 0 0 0 rgba(255, 68, 68, 0); }
+        }
+
+        /* Panel powitalny AI */
+        .welcome-panel {
+            background: rgba(101, 67, 33, 0.7);
+            border-radius: 50px;
+            padding: 25px;
+            margin: 20px 0;
+            border: 2px solid #DAA520;
+            backdrop-filter: blur(5px);
+            text-align: center;
+        }
+
+        .welcome-text {
+            font-size: clamp(1.1rem, 4vw, 1.5rem);
+            line-height: 1.6;
+            color: #FFEBCD;
+        }
+
+        .ai-avatar {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+
+        /* Obszar rozmowy */
+        .conversation-area {
+            background: rgba(70, 40, 20, 0.8);
+            border-radius: 40px;
+            padding: 20px;
+            margin: 20px 0;
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #DAA520;
+        }
+
+        .message {
+            margin: 15px 0;
+            padding: 15px 20px;
+            border-radius: 30px;
+            max-width: 85%;
+            word-wrap: break-word;
+            animation: fadeIn 0.3s;
+            font-size: clamp(1rem, 3.5vw, 1.2rem);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .user-message {
+            background: #8B4513;
+            border: 2px solid #DAA520;
+            margin-left: auto;
+            border-radius: 30px 30px 10px 30px;
+            text-align: right;
+        }
+
+        .bot-message {
+            background: #2A6B2A;
+            border: 2px solid #DAA520;
+            margin-right: auto;
+            border-radius: 30px 30px 30px 10px;
+        }
+
+        .system-message {
+            background: #5A4A3A;
+            border: 1px solid #DAA520;
+            margin: 10px auto;
+            text-align: center;
+            max-width: 90%;
+            font-style: italic;
+            opacity: 0.9;
+        }
+
+        .timestamp {
+            font-size: 0.7rem;
+            opacity: 0.7;
+            margin-top: 5px;
+        }
+
+        /* Menu w siatce */
+        .menu-preview {
+            margin: 30px 0;
+        }
+
+        .menu-preview h3 {
+            color: #FFD700;
+            font-size: clamp(1.3rem, 5vw, 2rem);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+        }
+
+        .menu-item {
+            background: rgba(139, 69, 19, 0.6);
+            border: 2px solid #DAA520;
+            border-radius: 30px;
+            padding: 15px 10px;
+            text-align: center;
+            transition: all 0.2s;
+            backdrop-filter: blur(2px);
+        }
+
+        .menu-item:active {
+            transform: scale(0.97);
+            background: rgba(160, 82, 45, 0.8);
+        }
+
+        .menu-item h4 {
+            color: #FFD700;
+            font-size: clamp(1rem, 3.5vw, 1.3rem);
+            margin-bottom: 5px;
+        }
+
+        .menu-price {
+            font-size: clamp(1.1rem, 4vw, 1.5rem);
+            font-weight: bold;
+            color: #FFD700;
+        }
+
+        .menu-desc {
+            font-size: 0.8rem;
+            opacity: 0.8;
+            margin: 5px 0;
+        }
+
+        /* Panel informacyjny */
+        .info-footer {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 15px;
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(60, 40, 20, 0.6);
+            border-radius: 40px;
+            border: 1px solid #DAA520;
+        }
+
+        .info-item {
+            text-align: center;
+        }
+
+        .info-item .icon {
+            font-size: 2rem;
+            margin-bottom: 5px;
+        }
+
+        .info-item .label {
+            font-weight: bold;
+            color: #FFD700;
+            font-size: 1rem;
+        }
+
+        .info-item .value {
+            font-size: 0.9rem;
+        }
+
+        .phone-number {
+            font-size: clamp(1.3rem, 5vw, 2rem);
+            color: #FFD700;
+            text-align: center;
+            margin: 20px 0 10px;
+            letter-spacing: 2px;
+        }
+
+        /* Stopka */
+        .footer-note {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.8rem;
+            opacity: 0.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🍽️ BISTRO PRZYKŁAD</h1>
+        <div class="subtitle">Tradycyjna kuchnia europejska</div>
+
+        <!-- GŁÓWNY PRZYCISK (OKRĄGŁY, DUŻY) -->
+        <div class="mic-container">
+            <div class="mic-button" id="mainButton" onclick="handleMainButton()">
+                🎤
+                <span id="buttonText">Dotknij by mówić</span>
+            </div>
+        </div>
+
+        <!-- Panel powitalny AI -->
+        <div class="welcome-panel" id="welcomePanel">
+            <div class="ai-avatar">🤵</div>
+            <div class="welcome-text" id="welcomeMessage">
+                Witam w restauracji Bistro Przykład!<br>
+                Oto nasze specjały kuchni europejskiej.<br>
+                Powiedz czego szukasz, a chętnie doradzę.
+            </div>
+        </div>
+
+        <!-- Obszar rozmowy (ukryty na początku, pojawia się po pierwszej interakcji) -->
+        <div class="conversation-area" id="conversationArea" style="display: none;">
+            <div id="conversation"></div>
+        </div>
+
+        <!-- Menu -->
+        <div class="menu-preview">
+            <h3>🍽️ NASZE DANIA</h3>
+            <div class="menu-grid" id="menuGrid"></div>
+        </div>
+
+        <!-- Informacje -->
+        <div class="info-footer">
+            <div class="info-item">
+                <div class="icon">🕐</div>
+                <div class="label">Godziny</div>
+                <div class="value">8:00 - 22:00</div>
+            </div>
+            <div class="info-item">
+                <div class="icon">📍</div>
+                <div class="label">Adres</div>
+                <div class="value">Przykładowa 1</div>
+            </div>
+            <div class="info-item">
+                <div class="icon">🚚</div>
+                <div class="label">Dowóz</div>
+                <div class="value">10 zł</div>
+            </div>
+            <div class="info-item">
+                <div class="icon">🥣</div>
+                <div class="label">Sosy</div>
+                <div class="value">własne</div>
+            </div>
+        </div>
+
+        <div class="phone-number">📞 +48 000 000 000</div>
+        <div class="footer-note">Dotknij mikrofon i mów po polsku • AI Kiosk v2.0</div>
+    </div>
+
+    <script>
+        // ==================== BAZA WIEDZY AI ====================
+        // TO JEST OSOBNY PLIK Z DANYMI (można przenieść do osobnego JSON)
+        const AI_KNOWLEDGE = {
+            // Powitanie
+            welcome: {
+                greeting: "Witam w restauracji Bistro Przykład! Specjalizujemy się w tradycyjnej kuchni europejskiej. Naszym flagowym daniem jest Placek - wyjątkowa przekąska z ciasta z różnymi nadzieniami. Mamy wersje wytrawne i słodkie. Co mogę polecić?",
+                recommend: "Polecam dziś Placek europejski z ziemniakami i ziołami oraz naszą domową lemoniadę."
+            },
+
+            // Produkty (dania)
+            products: [
+                {
+                    id: "europejski",
+                    name: "Placek europejski",
+                    price: 28,
+                    category: "wytrawne",
+                    description: "Tradycyjny europejski przysmak - delikatne ciasto nadziewane ziemniakami z ziołami i przyprawami. Podawany z sosem czosnkowym.",
+                    ingredients: ["ciasto", "ziemniaki", "zioła", "czosnek", "oliwa"],
+                    recipe: "Ciasto przygotowujemy według starej europejskiej receptury, cienko wałkujemy i nadziewamy farszem z ziemniaków, cebuli, czosnku i świeżych ziół. Zapiekamy do złotego koloru.",
+                    allergens: ["gluten", "nabiał"],
+                    promotions: "W poniedziałki -15% na wszystkie dania europejskie"
+                },
+                {
+                    id: "kaukaski",
+                    name: "Placek kaukaski",
+                    price: 26,
+                    category: "wytrawne",
+                    description: "Inspirowany kuchnią Europy - z soczewicą, kolendrą i pikantnymi przyprawami.",
+                    ingredients: ["ciasto", "soczewica", "kolendra", "papryka", "czosnek"],
+                    recipe: "Soczewicę gotujemy z przyprawami, mieszamy z karmelizowaną cebulą, zawijamy w ciasto i pieczemy na chrupko.",
+                    allergens: ["gluten"],
+                    promotions: null
+                },
+                {
+                    id: "mieso",
+                    name: "Placek z mięsem",
+                    price: 35,
+                    category: "wytrawne",
+                    description: "Soczysta wołowina duszona z cebulą i przyprawami w cieście.",
+                    ingredients: ["ciasto", "wołowina", "cebula", "pieprz", "majeranek"],
+                    recipe: "Mięso dusimy powoli z przyprawami, następnie zawijamy w ciasto i zapiekamy. Podajemy z sosem mięsnym.",
+                    allergens: ["gluten"],
+                    promotions: "Weekendowa promocja: drugi Placek z mięsem -50%"
+                },
+                {
+                    id: "kapusta",
+                    name: "Placek z kapustą",
+                    price: 24,
+                    category: "wytrawne",
+                    description: "Z duszona kapustą i grzybami - wegetariańska wersja.",
+                    ingredients: ["ciasto", "kapusta", "grzyby", "cebula", "koper"],
+                    recipe: "Kapustę dusimy z grzybami leśnymi, doprawiamy, zawijamy w ciasto i pieczemy.",
+                    allergens: ["gluten"],
+                    promotions: null
+                },
+                {
+                    id: "grzyby",
+                    name: "Placek z grzybami",
+                    price: 29,
+                    category: "wytrawne",
+                    description: "Leśne grzyby w kremowym sosie w chrupiącym cieście.",
+                    ingredients: ["ciasto", "grzyby", "śmietana", "cebula", "tymianek"],
+                    recipe: "Grzyby dusimy z cebulą, dodajemy śmietanę i zioła. Nadzienie zawijamy w ciasto i zapiekamy.",
+                    allergens: ["gluten", "nabiał"],
+                    promotions: null
+                },
+                {
+                    id: "nutella",
+                    name: "Placek z nutellą",
+                    price: 22,
+                    category: "słodkie",
+                    description: "Słodka wersja z kremem czekoladowym - idealna na deser.",
+                    ingredients: ["ciasto", "nutella", "orzechy"],
+                    recipe: "Ciasto smażymy na złoto, nadziewamy nutellą i posypujemy orzechami.",
+                    allergens: ["gluten", "orzechy", "mleko"],
+                    promotions: "Deserowy zestaw: Placek z nutellą + lemoniada = 35 zł"
+                },
+                {
+                    id: "twarog",
+                    name: "Placek z twarogiem",
+                    price: 24,
+                    category: "słodkie",
+                    description: "Z twarogiem i miodem - tradycyjny europejski deser.",
+                    ingredients: ["ciasto", "twaróg", "miód", "cynamon"],
+                    recipe: "Twaróg mieszamy z miodem i cynamonem, zawijamy w ciasto, zapiekamy. Podajemy polane miodem.",
+                    allergens: ["gluten", "nabiał"],
+                    promotions: null
+                }
+            ],
+
+            // Informacje o restauracji
+            restaurant: {
+                name: "Bistro Przykład",
+                cuisine: "europejska",
+                hours: "8:00 - 22:00 codziennie",
+                address: "ul. Przykładowa 1, 00-000 Miasto Demo",
+                phone: "+48 000 000 000",
+                delivery: "Dowóz 10 zł (zamówienia telefoniczne)",
+                payment: "Gotówka, karta, blik",
+                website: "www.example.com",
+                founded: "Założona w 2018 roku przez rodzinę z Armenii",
+                about: "Bistro Przykład to rodzinna restauracja serwująca autentyczną kuchnię europejską. Naszym celem jest dzielenie się bogactwem smaków Europy. Wszystkie potrawy przygotowujemy według tradycyjnych receptur."
+            },
+
+            // Promocje i wydarzenia
+            promotions: [
+                {
+                    id: "promo1",
+                    title: "Poniedziałek z Ormenią",
+                    description: "W każdy poniedziałek 15% zniżki na wszystkie dania europejskie"
+                },
+                {
+                    id: "promo2",
+                    title: "Weekendowy duet",
+                    description: "Kup drugi Placek z mięsem 50% taniej w soboty i niedziele"
+                },
+                {
+                    id: "promo3",
+                    title: "Deserowy zestaw",
+                    description: "Placek z nutellą + lemoniada = 35 zł"
+                }
+            ],
+
+            // Sugestie i rekomendacje
+            suggestions: {
+                popular: "Najczęściej wybierany jest Placek europejski i Placek z mięsem",
+                forTwo: "Dla pary polecamy zestaw: Placek europejski, Placek z mięsem, lemoniada i deser",
+                vegetarian: "Dla wegetarian polecamy Placek z kapustą lub z grzybami",
+                sweet: "Dla miłośników słodkości mamy Placek z nutellą lub z twarogiem i miodem"
+            },
+
+            // Odpowiedzi na typowe pytania
+            faq: {
+                opening_hours: "Jesteśmy czynni codziennie od 8:00 do 22:00. Zapraszamy!",
+                address: "Nasz adres: ul. Przykładowa 1, Miasto Demo. To w centrum miasta, blisko dworca.",
+                delivery: "Oferujemy dowóz w cenie 10 zł na terenie miasta. Zamówienia przyjmujemy telefonicznie: +48 000 000 000.",
+                parking: "Przed restauracją jest bezpłatny parking dla gości.",
+                reservations: "Nie prowadzimy rezerwacji stolików - obowiązuje kolejność przyjścia. W razie potrzeby zapraszamy do kontaktu telefonicznego.",
+                payment: "Akceptujemy płatności gotówką, kartą oraz blikiem.",
+                ingredients: "Wszystkie składniki są świeże, pochodzą od lokalnych dostawców. W razie alergii prosimy pytać obsługę o szczegóły.",
+                gluten_free: "Niestety nie posiadamy wersji bezglutenowych, ponieważ wszystkie nasze ciasta zawierają gluten.",
+                vegan: "Mamy dania wegetariańskie (z kapustą, grzybami), ale nie wegańskie - zawierają nabiał."
+            }
+        };
+
+        // ==================== STAN APLIKACJI ====================
+        let isListening = false;
+        let isFirstInteraction = true;
+        let conversationVisible = false;
+        let mediaRecorder = null;
+        let audioChunks = [];
+
+        // Elementy DOM
+        const mainButton = document.getElementById('mainButton');
+        const buttonText = document.getElementById('buttonText');
+        const welcomePanel = document.getElementById('welcomePanel');
+        const welcomeMessage = document.getElementById('welcomeMessage');
+        const conversationArea = document.getElementById('conversationArea');
+        const conversation = document.getElementById('conversation');
+        const menuGrid = document.getElementById('menuGrid');
+
+        // Inicjalizacja menu z bazy wiedzy
+        function renderMenu() {
+            const menuHtml = AI_KNOWLEDGE.products.map(product => `
+                <div class="menu-item" onclick="askAboutProduct('${product.id}')">
+                    <h4>${product.name}</h4>
+                    <div class="menu-price">${product.price} zł</div>
+                    <div class="menu-desc">${product.description.substring(0, 40)}...</div>
+                </div>
+            `).join('');
+            menuGrid.innerHTML = menuHtml;
+        }
+
+        // Funkcja do zadawania pytań o produkt
+        function askAboutProduct(productId) {
+            const product = AI_KNOWLEDGE.products.find(p => p.id === productId);
+            if (product) {
+                addMessage('user', `Opowiedz o ${product.name}`);
+
+                // AI odpowiada szczegółowo
+                setTimeout(() => {
+                    const response = `${product.name} – ${product.description} Składniki: ${product.ingredients.join(', ')}. ${product.recipe} Cena: ${product.price} zł. ${product.promotions ? 'Promocja: ' + product.promotions : ''}`;
+                    addMessage('bot', response);
+                }, 600);
+            }
+        }
+
+        // Funkcja obsługi głównego przycisku
+        async function handleMainButton() {
+            if (!isListening) {
+                // Rozpocznij nagrywanie
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    mediaRecorder = new MediaRecorder(stream);
+                    audioChunks = [];
+
+                    mediaRecorder.ondataavailable = event => {
+                        audioChunks.push(event.data);
+                    };
+
+                    mediaRecorder.onstop = async () => {
+                        const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                        await processAudio(audioBlob);
+                        stream.getTracks().forEach(track => track.stop());
+                    };
+
+                    mediaRecorder.start();
+                    isListening = true;
+
+                    // Zmiana wyglądu przycisku
+                    mainButton.classList.add('active', 'listening');
+                    buttonText.innerText = 'Słucham...';
+
+                    // Przy pierwszym użyciu - zmiana powitania
+                    if (isFirstInteraction) {
+                        welcomeMessage.innerHTML = AI_KNOWLEDGE.welcome.greeting;
+                        isFirstInteraction = false;
+                    }
+
+                } catch (err) {
+                    console.error('Błąd mikrofonu:', err);
+                    addSystemMessage('❌ Brak dostępu do mikrofonu');
+                }
+            } else {
+                // Zakończ nagrywanie
+                if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+                    mediaRecorder.stop();
+                }
+                isListening = false;
+                mainButton.classList.remove('active', 'listening');
+                buttonText.innerText = 'Dotknij by mówić';
+            }
+        }
+
+        // Przetwarzanie audio (symulacja rozpoznawania)
+        async function processAudio(audioBlob) {
+            // Symulacja opóźnienia sieciowego
+            addSystemMessage('⏳ Rozpoznaję mowę...');
+
+            // W rzeczywistej aplikacji tu byłoby wysyłanie do backendu
+            // Na razie symulujemy rozpoznawanie po 1.5s
+            setTimeout(() => {
+                // Symulowane rozpoznane teksty (dla testów)
+                const simulatedQueries = [
+                    "co polecacie",
+                    "Placek europejski",
+                    "godziny otwarcia",
+                    "czy macie dowóz",
+                    "adres restauracji",
+                    "promocje",
+                    "Placek z mięsem",
+                    "coś słodkiego",
+                    "dla wegetarian"
+                ];
+
+                const randomQuery = simulatedQueries[Math.floor(Math.random() * simulatedQueries.length)];
+
+                // Dodajemy zapytanie użytkownika do rozmowy
+                addMessage('user', randomQuery);
+
+                // Generujemy odpowiedź AI na podstawie bazy wiedzy
+                const response = generateAIResponse(randomQuery);
+
+                // Dodajemy odpowiedź AI
+                setTimeout(() => {
+                    addMessage('bot', response);
+                }, 500);
+
+                // Pokazujemy obszar rozmowy jeśli niewidoczny
+                if (!conversationVisible) {
+                    conversationArea.style.display = 'block';
+                    conversationVisible = true;
+                }
+
+                addSystemMessage('Gotowy do następnego pytania');
+            }, 1500);
+        }
+
+        // Generator odpowiedzi AI na podstawie bazy wiedzy
+        function generateAIResponse(query) {
+            const q = query.toLowerCase();
+
+            // Powitanie
+            if (q.includes('dzień dobry') || q.includes('witam') || q.includes('cześć')) {
+                return "Dzień dobry! Witam w Bistro Przykład. Czym mogę służyć?";
+            }
+
+            // Polecenia ogólne
+            if (q.includes('polecacie') || q.includes('co dobre') || q.includes('specjały')) {
+                return AI_KNOWLEDGE.welcome.recommend + " " + AI_KNOWLEDGE.suggestions.popular;
+            }
+
+            // Godziny otwarcia
+            if (q.includes('godziny') || q.includes('otwarcia') || q.includes('czynne')) {
+                return AI_KNOWLEDGE.faq.opening_hours;
+            }
+
+            // Adres
+            if (q.includes('adres') || q.includes('gdzie') || q.includes('znajduje')) {
+                return AI_KNOWLEDGE.faq.address;
+            }
+
+            // Dowóz/dostawa
+            if (q.includes('dowóz') || q.includes('dostawa') || q.includes('transport')) {
+                return AI_KNOWLEDGE.faq.delivery;
+            }
+
+            // Promocje
+            if (q.includes('promocje') || q.includes('zniżki') || q.includes('okazje')) {
+                return "Nasze aktualne promocje: " + AI_KNOWLEDGE.promotions.map(p => p.description).join('. ');
+            }
+
+            // Dla wegetarian
+            if (q.includes('wegetaria') || q.includes('bez mięsa')) {
+                return AI_KNOWLEDGE.suggestions.vegetarian;
+            }
+
+            // Słodkie
+            if (q.includes('słodkie') || q.includes('deser') || q.includes('na słodko')) {
+                return AI_KNOWLEDGE.suggestions.sweet;
+            }
+
+            // Produkty po nazwie
+            for (let product of AI_KNOWLEDGE.products) {
+                if (q.includes(product.name.toLowerCase())) {
+                    return `${product.name} – ${product.description} Cena: ${product.price} zł. ${product.promotions ? 'Promocja: ' + product.promotions : ''}`;
+                }
+            }
+
+            // Płatności
+            if (q.includes('płatność') || q.includes('karta') || q.includes('gotówka')) {
+                return AI_KNOWLEDGE.faq.payment;
+            }
+
+            // Składniki/alergeny
+            if (q.includes('składniki') || q.includes('alergeny') || q.includes('uczulenie')) {
+                return "Wszystkie składniki są świeże. Dla konkretnego dania zapytaj o jego nazwę, a podam pełną listę składników. W razie alergii prosimy informować obsługę.";
+            }
+
+            // Domyślna odpowiedź
+            return "Przepraszam, nie zrozumiałem. Proszę zapytać obsługę restauracji lub spróbować innego pytania. Możesz zapytać o menu, godziny otwarcia, adres, dowóz lub promocje.";
+        }
+
+        // Dodawanie wiadomości do rozmowy
+        function addMessage(type, text) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type === 'user' ? 'user-message' : 'bot-message'}`;
+
+            const prefix = type === 'user' ? '👤' : '🤖';
+            const timestamp = new Date().toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit' });
+
+            messageDiv.innerHTML = `${prefix} ${text}<div class="timestamp">${timestamp}</div>`;
+
+            conversation.appendChild(messageDiv);
+            conversationArea.scrollTop = conversationArea.scrollHeight;
+
+            // Pokaż obszar rozmowy jeśli ukryty
+            if (!conversationVisible) {
+                conversationArea.style.display = 'block';
+                conversationVisible = true;
+            }
+        }
+
+        // Dodawanie wiadomości systemowej
+        function addSystemMessage(text) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message system-message';
+            messageDiv.innerHTML = `ℹ️ ${text}`;
+            conversation.appendChild(messageDiv);
+            conversationArea.scrollTop = conversationArea.scrollHeight;
+        }
+
+        // Inicjalizacja
+        window.onload = function() {
+            renderMenu();
+
+            // Sprawdź wsparcie dla MediaRecorder
+            if (!navigator.mediaDevices || !window.MediaRecorder) {
+                mainButton.style.opacity = '0.5';
+                mainButton.style.pointerEvents = 'none';
+                buttonText.innerText = 'Brak wsparcia';
+                addSystemMessage('⚠️ Twoja przeglądarka nie wspiera nagrywania audio. Użyj Chrome, Firefox lub Edge na urządzeniu mobilnym.');
+            }
+
+            // Dla urządzeń dotykowych - usuwamy efekt podwójnego kliknięcia
+            document.addEventListener('touchstart', (e) => {
+                if (e.target.closest('.menu-item')) {
+                    e.preventDefault();
+                }
+            }, { passive: false });
+        };
+    </script>
+</body>
+</html>

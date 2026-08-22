@@ -1,0 +1,46 @@
+{
+  "restaurant": {
+    "name": "Bistro Przykład",
+    "cuisine": "europejska",
+    "greeting": "Dzień dobry! Witam w Bistro Przykład. Nazywam się Ola. W czym mogę pomóc — opowiedzieć o menu, godzinach otwarcia czy dowozie?",
+    "about": "Bistro Przykład to przykładowa (demonstracyjna) restauracja dla systemu Fayna Kiosk. Wszystkie dane są fikcyjne.",
+    "hours": "Jesteśmy otwarci codziennie od 10:00 do 22:00.",
+    "address": "ul. Przykładowa 1, 00-000 Miasto Demo.",
+    "phone": "+48 000 000 000",
+    "delivery": "Dowozimy na terenie miasta za 10 zł.",
+    "payment": "Płacić można gotówką, kartą lub blikiem.",
+    "sauces": "Wszystkie sosy przygotowujemy sami."
+  },
+  "dishes": [
+    {
+      "id": "placek_klasyczny",
+      "name": "Placek klasyczny",
+      "price": 24,
+      "description": "Cienkie ciasto z nadzieniem ziemniaczano-ziołowym.",
+      "ingredients": ["ciasto", "ziemniaki", "zioła"],
+      "allergens": ["gluten"]
+    },
+    {
+      "id": "placek_miesny",
+      "name": "Placek z mięsem",
+      "price": 32,
+      "description": "Soczysta wołowina duszona z cebulą w cieście.",
+      "ingredients": ["ciasto", "wołowina", "cebula"],
+      "allergens": ["gluten"]
+    },
+    {
+      "id": "placek_slodki",
+      "name": "Placek na słodko",
+      "price": 20,
+      "description": "Słodki placek z kremem czekoladowym.",
+      "ingredients": ["ciasto", "krem czekoladowy"],
+      "allergens": ["gluten", "mleko"]
+    }
+  ],
+  "faq": {
+    "polecacie": "Polecam Placek klasyczny — to nasz bestseller. Albo Placek z mięsem. Co brzmi lepiej?",
+    "godziny": "Jesteśmy czynni codziennie 10:00–22:00.",
+    "adres": "ul. Przykładowa 1, Miasto Demo — zapraszamy!",
+    "dowóz": "Dowozimy za 10 zł na terenie miasta. Zadzwoń pod +48 000 000 000."
+  }
+}

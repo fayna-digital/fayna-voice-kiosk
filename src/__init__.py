@@ -1,0 +1,1 @@
+"""Fayna Kiosk application package."""

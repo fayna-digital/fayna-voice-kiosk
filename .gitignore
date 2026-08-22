@@ -1,0 +1,31 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
+
+# Logs / runtime artifacts
+*.log
+logs/
+
+# RODO: розмови відвідувачів — НІКОЛИ не комітити
+data/audio/
+data/transcripts/
+
+# Секрети — НІКОЛИ не комітити
+.env
+.env.*
+secrets.env
+*.pem
+*.key
+*.crt
+*_token*
+
+# Tool caches
+.ruff_cache/
+.pytest_cache/
+.mypy_cache/
+
+# OS
+.DS_Store

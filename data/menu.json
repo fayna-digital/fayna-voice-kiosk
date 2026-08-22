@@ -1,0 +1,44 @@
+{
+  "restaurant": "Bistro Przykład",
+  "categories": [
+    {
+      "name": "Dania główne",
+      "items": [
+        {
+          "id": "main_001",
+          "name": "Placek z mięsem",
+          "description": "Wołowina duszona z cebulą w cieście.",
+          "price": 32,
+          "ingredients": ["ciasto", "wołowina", "cebula"],
+          "weight": 250
+        }
+      ]
+    },
+    {
+      "name": "Przystawki",
+      "items": [
+        {
+          "id": "starter_001",
+          "name": "Placek klasyczny",
+          "description": "Ciasto z nadzieniem ziemniaczano-ziołowym.",
+          "price": 24,
+          "ingredients": ["ciasto", "ziemniaki", "zioła"],
+          "weight": 200
+        }
+      ]
+    },
+    {
+      "name": "Napoje",
+      "items": [
+        {
+          "id": "drink_001",
+          "name": "Lemoniada domowa",
+          "description": "Orzeźwiająca lemoniada z miętą.",
+          "price": 12,
+          "ingredients": ["cytryna", "mięta", "cukier", "woda"],
+          "volume": 400
+        }
+      ]
+    }
+  ]
+}

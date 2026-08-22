@@ -1,0 +1,28 @@
+{
+  "questions": [
+    {
+      "id": "qa_001",
+      "keywords": ["godziny", "otwarcia", "czynne", "kiedy"],
+      "question": "Godziny otwarcia",
+      "answer": "Jesteśmy otwarci codziennie od 10:00 do 22:00."
+    },
+    {
+      "id": "qa_002",
+      "keywords": ["adres", "gdzie", "lokalizacja", "znajdujecie"],
+      "question": "Adres",
+      "answer": "Nasz adres: ul. Przykładowa 1, 00-000 Miasto Demo."
+    },
+    {
+      "id": "qa_003",
+      "keywords": ["parking", "auto", "samochód", "zaparkować"],
+      "question": "Parking",
+      "answer": "Mamy własny parking dla gości."
+    },
+    {
+      "id": "qa_004",
+      "keywords": ["rezerwacja", "stolik", "zarezerwować", "rezerwować"],
+      "question": "Rezerwacja",
+      "answer": "Stolik zarezerwujesz telefonicznie: +48 000 000 000."
+    }
+  ]
+}

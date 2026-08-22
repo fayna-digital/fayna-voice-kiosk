@@ -1,0 +1,9 @@
+# Fayna Kiosk — runtime dependencies
+# Slim, curated set (the engine only needs STT + TTS; NLP is stdlib).
+
+SpeechRecognition>=3.10   # STT — Google recognizer (online) / Sphinx (offline fallback)
+pyttsx3>=2.90             # TTS — offline text-to-speech (uses system voices)
+PyAudio>=0.2.13           # microphone input for SpeechRecognition
+
+# Note (macOS): pyttsx3 selects system voices via NSSpeechSynthesizer;
+# on Linux install `espeak`/`espeak-ng` for offline TTS voices.
